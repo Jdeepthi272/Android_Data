@@ -1,0 +1,44 @@
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+class LRUCache<K, V> extends LinkedHashMap<K, V> {
+    private final int capacity;
+
+    public LRUCache(int capacity) {
+        super(capacity, 0.75f, true); // Pass true to access-order mode
+        this.capacity = capacity;
+    }
+
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+        return size() > capacity; // Remove eldest when capacity exceeds
+    }
+
+    public V getCache(K key) {
+        return super.getOrDefault(key, null);
+    }
+
+    public void putCache(K key, V value) {
+        super.put(key, value);
+    }
+
+    public static void main(String[] args) {
+        LRUCache<Integer, String> cache = new LRUCache<>(3); // Cache with capacity 3
+        
+        cache.putCache(1, "One");
+        cache.putCache(2, "Two");
+        cache.putCache(3, "Three");
+
+        System.out.println("Initial Cache: " + cache);
+
+        cache.getCache(1); // Accessing key 1 makes it most recently used
+        cache.putCache(4, "Four"); // Adding 4 should evict the least recently used (key 2)
+
+        System.out.println("Cache after accessing 1 and adding 4: " + cache);
+
+        cache.getCache(3); // Accessing key 3
+        cache.putCache(5, "Five"); // Adding 5 should evict key 4
+
+        System.out.println("Cache after accessing 3 and adding 5: " + cache);
+    }
+}
